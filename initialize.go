@@ -6,6 +6,7 @@ import (
 	"bluebell/dao/rdb"
 	"bluebell/logger"
 	"fmt"
+	"log/slog"
 )
 
 func initialize() error {
@@ -23,4 +24,15 @@ func initialize() error {
 		return fmt.Errorf("redis init failed: %w", err)
 	}
 	return nil
+}
+
+func closure() {
+	var err error
+	if err = msq.Close(); err != nil {
+		slog.Warn("close mysql failed", "error", err.Error())
+	}
+	if err = rdb.Close(); err != nil {
+		slog.Warn("close redis failed", "error", err.Error())
+	}
+	return
 }

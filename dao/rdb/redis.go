@@ -12,6 +12,13 @@ const RedisTimeOut = time.Second * 3
 
 var rdb *redis.Client
 
+func Close() error {
+	if rdb != nil {
+		return rdb.Close()
+	}
+	return nil
+}
+
 func Init() error {
 	redisCfg, err := config.Cfg.Redis()
 	if err != nil {

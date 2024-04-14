@@ -6,9 +6,17 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"log/slog"
 )
 
 var msq *sqlx.DB
+
+func Close() error {
+	if msq != nil {
+		return msq.Close()
+	}
+	return nil
+}
 
 func Init() error {
 	mysqlCfg, err := config.Cfg.Mysql()
@@ -44,7 +52,11 @@ func createDB(mysqlCfg *model.MysqlCfg) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func() {
+		if err = db.Close(); err != nil {
+			slog.Warn("mysql close failed", "error", err.Error())
+		}
+	}()
 
 	query := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", mysqlCfg.DBName)
 	if _, err = db.Exec(query); err != nil {

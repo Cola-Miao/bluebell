@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	defer closure()
 	var err error
 	if err = initialize(); err != nil {
 		slog.Error("infrastructure init failed", "error: ", err.Error())
