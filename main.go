@@ -1,16 +1,20 @@
 package main
 
 import (
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
+	"bluebell/router"
 	"log/slog"
 )
 
 func main() {
-	if err := initialize(); err != nil {
+	var err error
+	if err = initialize(); err != nil {
+		slog.Error("infrastructure init failed", "error: ", err.Error())
+		panic(err)
+	}
+	if err = router.SetupRouter(); err != nil {
 		slog.Error("server start failed", "error: ", err.Error())
 		panic(err)
 	}
-	slog.Info("server run")
-	fmt.Println("server run")
+
+	return
 }

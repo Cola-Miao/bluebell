@@ -1,3 +1,6 @@
+Server:
+  Addr: "0.0.0.0:5912"
+
 Log:
   #lumberjack
   Filename: "./log/bluebell_log"

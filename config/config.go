@@ -44,3 +44,9 @@ func (c *config) Redis() (*model.RedisCfg, error) {
 	err := c.vp.UnmarshalKey("Redis", &redisCfg)
 	return &redisCfg, err
 }
+
+func (c *config) Server() (*model.ServerCfg, error) {
+	var serverCfg model.ServerCfg
+	err := c.vp.UnmarshalKey("Server", &serverCfg)
+	return &serverCfg, err
+}

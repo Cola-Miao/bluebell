@@ -13,3 +13,20 @@ type LogCfg struct {
 	Level     int
 	Type      int
 }
+
+type MysqlCfg struct {
+	User     string
+	Password string
+	Addr     string
+	DBName   string
+}
+
+type RedisCfg struct {
+	User     string
+	Password string
+	Addr     string
+}
+
+type ServerCfg struct {
+	Addr string
+}
