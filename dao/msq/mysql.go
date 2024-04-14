@@ -13,13 +13,13 @@ var msq *sqlx.DB
 func Init() error {
 	mysqlCfg, err := config.Cfg.Mysql()
 	if err != nil {
-		return err
+		return fmt.Errorf("read mysql config failed: %w", err)
 	}
 	if err = createDB(mysqlCfg); err != nil {
-		return err
+		return fmt.Errorf("create database failed: %w", err)
 	}
 	if err = connectDB(mysqlCfg); err != nil {
-		return err
+		return fmt.Errorf("connect database failed: %w", err)
 	}
 	return nil
 }

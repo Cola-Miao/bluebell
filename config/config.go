@@ -2,6 +2,7 @@ package config
 
 import (
 	"bluebell/model"
+	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log/slog"
@@ -17,7 +18,7 @@ func (c *config) Init() error {
 	vp := viper.New()
 	vp.SetConfigFile("config.yaml")
 	if err := vp.ReadInConfig(); err != nil {
-		return err
+		return fmt.Errorf("read in config failed: %w", err)
 	}
 	c.vp = vp
 	vp.WatchConfig()

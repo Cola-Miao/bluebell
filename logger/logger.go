@@ -3,6 +3,7 @@ package logger
 import (
 	"bluebell/config"
 	"errors"
+	"fmt"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log/slog"
 )
@@ -15,7 +16,7 @@ const (
 func Init() (err error) {
 	logCfg, err := config.Cfg.Log()
 	if err != nil {
-		return err
+		return fmt.Errorf("read logger config failed: %w", err)
 	}
 
 	logger := lumberjack.Logger{
