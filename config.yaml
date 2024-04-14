@@ -1,0 +1,24 @@
+Log:
+  #lumberjack
+  Filename: "./log/bluebell_log"
+  MaxSize: 128 # Mib
+  MaxAge: 30 # Day
+  MaxBackups: 10
+  LocalTime: true
+  Compress: false
+
+  #slog
+  AddSource: false
+  Level: -4 # Debug -4, Info 0, Warn 4, Error 8
+  Type: 0 # JSON 0, Text 1
+
+Mysql:
+  User: "root"
+  Password: "root"
+  Addr: "127.0.0.1:3306"
+  DBName: "bluebell"
+
+Redis:
+  User: "root"
+  Password: ""
+  Addr: "127.0.0.1:6379"
