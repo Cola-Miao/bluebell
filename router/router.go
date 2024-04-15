@@ -22,15 +22,26 @@ func SetupRouter() error {
 	}
 
 	r := gin.Default()
-	public := r.Group("/")
-	{
-		public.GET("/health", service.Health)
-	}
+	registerRouter(r)
+
 	srv := http.Server{
 		Addr:    serverCfg.Addr,
 		Handler: r,
 	}
+	if err = startServer(&srv); err != nil {
+		return err
+	}
+	return nil
+}
 
+func registerRouter(r *gin.Engine) {
+	public := r.Group("/")
+	{
+		public.GET("/health", service.Health)
+	}
+}
+
+func startServer(srv *http.Server) (err error) {
 	go func() {
 		err = srv.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -49,6 +60,5 @@ func SetupRouter() error {
 		return err
 	}
 	slog.Info("server shutdown")
-
 	return nil
 }
