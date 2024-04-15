@@ -29,6 +29,9 @@ func Init() error {
 	if err = connectDB(mysqlCfg); err != nil {
 		return fmt.Errorf("connect database failed: %w", err)
 	}
+	if err = initDBTable(); err != nil {
+		return fmt.Errorf("crate table failed: %w", err)
+	}
 	return nil
 }
 

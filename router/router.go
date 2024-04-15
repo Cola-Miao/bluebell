@@ -38,6 +38,9 @@ func registerRouter(r *gin.Engine) {
 	public := r.Group("/")
 	{
 		public.GET("/health", service.Health)
+		public.GET("/test", service.TestFunc)
+		public.POST("/signup", service.Signup)
+		public.POST("/login", service.Login)
 	}
 }
 

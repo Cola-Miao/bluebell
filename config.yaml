@@ -3,7 +3,7 @@ Server:
 
 Log:
   #lumberjack
-  Filename: "./log/bluebell_log"
+  Filename: "./log/bluebell.log"
   MaxSize: 128 # Mib
   MaxAge: 30 # Day
   MaxBackups: 10
