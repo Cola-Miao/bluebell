@@ -21,9 +21,9 @@ func initialize() error {
 	if err = msq.Init(); err != nil {
 		return fmt.Errorf("mysql init failed: %w", err)
 	}
-	//if err = rdb.Init(); err != nil {
-	//	return fmt.Errorf("redis init failed: %w", err)
-	//}
+	if err = rdb.Init(); err != nil {
+		return fmt.Errorf("redis init failed: %w", err)
+	}
 	if err = utils.InitSFNode(); err != nil {
 		return err
 	}

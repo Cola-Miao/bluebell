@@ -17,6 +17,6 @@ func createUserTable() error {
     INDEX idx_uuid (uuid),
     INDEX idx_username (username)
 )ENGINE = InnoDB DEFAULT CHARSET utf8mb4`
-	_, err := msq.Exec(query)
+	_, err := db.Exec(query)
 	return err
 }

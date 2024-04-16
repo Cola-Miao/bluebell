@@ -2,6 +2,7 @@ package router
 
 import (
 	"bluebell/config"
+	"bluebell/router/middleware"
 	"bluebell/router/service"
 	"context"
 	"errors"
@@ -41,6 +42,10 @@ func registerRouter(r *gin.Engine) {
 		public.GET("/test", service.TestFunc)
 		public.POST("/signup", service.Signup)
 		public.POST("/login", service.Login)
+	}
+	private := r.Group("/", middleware.Auth())
+	{
+		private.GET("/private", service.Private)
 	}
 }
 

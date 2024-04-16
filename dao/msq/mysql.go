@@ -9,11 +9,11 @@ import (
 	"log/slog"
 )
 
-var msq *sqlx.DB
+var db *sqlx.DB
 
 func Close() error {
-	if msq != nil {
-		return msq.Close()
+	if db != nil {
+		return db.Close()
 	}
 	return nil
 }
@@ -39,11 +39,11 @@ func connectDB(mysqlCfg *model.MysqlCfg) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True",
 		mysqlCfg.User, mysqlCfg.Password, mysqlCfg.Addr, mysqlCfg.DBName)
 
-	db, err := sqlx.Connect("mysql", dsn)
+	var err error
+	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return err
 	}
-	msq = db
 	return nil
 }
 
@@ -51,7 +51,8 @@ func createDB(mysqlCfg *model.MysqlCfg) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
 		mysqlCfg.User, mysqlCfg.Password, mysqlCfg.Addr)
 
-	db, err := sqlx.Connect("mysql", dsn)
+	var err error
+	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return err
 	}

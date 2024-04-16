@@ -10,11 +10,11 @@ import (
 
 const RedisTimeOut = time.Second * 3
 
-var rdb *redis.Client
+var db *redis.Client
 
 func Close() error {
-	if rdb != nil {
-		return rdb.Close()
+	if db != nil {
+		return db.Close()
 	}
 	return nil
 }
@@ -30,14 +30,13 @@ func Init() error {
 		Password: redisCfg.Password,
 		Addr:     redisCfg.Addr,
 	}
-	c := redis.NewClient(&op)
+	db = redis.NewClient(&op)
 
 	ctx, cancel := context.WithTimeout(context.Background(), RedisTimeOut)
 	defer cancel()
-	if err = c.Ping(ctx).Err(); err != nil {
+	if err = db.Ping(ctx).Err(); err != nil {
 		return fmt.Errorf("connect redis failed: %w", err)
 	}
 
-	rdb = c
 	return nil
 }
