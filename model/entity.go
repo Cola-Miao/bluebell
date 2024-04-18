@@ -8,5 +8,12 @@ type User struct {
 	Username string
 	Hash     string
 	Email    sql.NullString
-	//	TODO: Add Delete_At ?
+}
+
+type Community struct {
+	ID            int64
+	AdminUUID     int64
+	Administrator string
+	Name          string
+	Introduction  string
 }

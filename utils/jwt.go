@@ -11,8 +11,7 @@ import (
 
 const (
 	JWTExpiresTime = time.Hour * 24 * 3
-	//JWTExpiresTime = time.Second * 10 // test
-	jwtSecret = "no secret"
+	jwtSecret      = "no secret"
 )
 
 func GenerateJWT(u *model.User) (string, error) {

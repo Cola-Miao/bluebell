@@ -7,6 +7,12 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		_, ok := c.Get("uuid")
+		if ok {
+			c.Next()
+			return
+		}
+
 		jwt, err := c.Cookie("jwt")
 		if err != nil {
 			utils.WebErrorMessage(c, err, "get cookie failed")
