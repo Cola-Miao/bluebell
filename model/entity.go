@@ -1,19 +1,35 @@
 package model
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
-	ID       int64
-	UUID     int64
-	Username string
-	Hash     string
-	Email    sql.NullString
+	ID       int64          `db:"id"`
+	UUID     int64          `db:"uuid"`
+	Username string         `db:"username"`
+	Hash     string         `db:"hash"`
+	Email    sql.NullString `db:"email"`
 }
 
 type Community struct {
-	ID            int64
-	AdminUUID     int64
-	Administrator string
-	Name          string
-	Introduction  string
+	ID            int64  `db:"id"`
+	AdminUUID     int64  `db:"admin_uuid"`
+	Administrator string `db:"administrator"`
+	Name          string `db:"name" binding:"required,min=1,max=16"`
+	Introduction  string `db:"introduction" binding:"required,max=512"`
+}
+
+type Article struct {
+	ID           int64     `db:"id"`
+	UUID         int64     `db:"uuid"`
+	CommunityID  int64     `db:"community_id" binding:"required"`
+	AuthorUUID   int64     `db:"author_uuid"`
+	Author       string    `db:"author"`
+	Title        string    `db:"title" binding:"required,max=32"`
+	Content      string    `db:"content" binding:"required"`
+	Introduction string    `db:"introduction"`
+	CreateAt     time.Time `db:"create_at"`
+	UpdateAt     time.Time `db:"update_at"`
 }
