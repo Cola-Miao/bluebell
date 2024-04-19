@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log/slog"
+	"os"
 )
 
 const (
@@ -35,13 +36,17 @@ func Init() (err error) {
 	}
 
 	var handle slog.Handler
-	switch logCfg.Type {
-	case JSON:
-		handle = slog.NewJSONHandler(&logger, &ho)
-	case Text:
-		handle = slog.NewTextHandler(&logger, &ho)
-	default:
-		return errors.New("undefined value")
+	if config.Cfg.Model == "DEBUG" {
+		handle = slog.NewJSONHandler(os.Stdout, &ho)
+	} else {
+		switch logCfg.Type {
+		case JSON:
+			handle = slog.NewJSONHandler(&logger, &ho)
+		case Text:
+			handle = slog.NewTextHandler(&logger, &ho)
+		default:
+			return errors.New("undefined value")
+		}
 	}
 	l := slog.New(handle)
 	slog.SetDefault(l)

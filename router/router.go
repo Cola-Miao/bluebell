@@ -42,6 +42,7 @@ func registerRouter(r *gin.Engine) {
 		public.GET("/test", service.TestFunc)
 		public.GET("/community", service.CommunityList)
 		public.GET("/community/:name", service.CommunityInfo)
+		public.GET("/article/:uuid", service.ReadArticle)
 		public.POST("/signup", service.Signup)
 		public.POST("/login", service.Login)
 	}
@@ -49,7 +50,8 @@ func registerRouter(r *gin.Engine) {
 	private := r.Group("/", middleware.Auth())
 	{
 		private.GET("/private", service.Private)
-		private.POST("create_community", service.CreateCommunity)
+		private.POST("/create_article", service.CreateArticle)
+		private.POST("/create_community", service.CreateCommunity)
 	}
 }
 

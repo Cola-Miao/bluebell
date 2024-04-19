@@ -9,7 +9,8 @@ import (
 )
 
 type config struct {
-	vp *viper.Viper
+	vp    *viper.Viper
+	Model string
 }
 
 var Cfg config

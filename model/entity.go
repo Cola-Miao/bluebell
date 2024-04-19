@@ -24,7 +24,7 @@ type Community struct {
 type Article struct {
 	ID           int64     `db:"id"`
 	UUID         int64     `db:"uuid"`
-	CommunityID  int64     `db:"community_id" binding:"required"`
+	CommunityID  int64     `db:"community_id" json:"community_id" binding:"required"`
 	AuthorUUID   int64     `db:"author_uuid"`
 	Author       string    `db:"author"`
 	Title        string    `db:"title" binding:"required,max=32"`

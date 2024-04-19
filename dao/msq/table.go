@@ -42,7 +42,7 @@ func createCommunityTable() error {
 
 func createArticleTable() error {
 	query := `CREATE TABLE IF NOT EXISTS article(
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	uuid BIGINT NOT NULL UNIQUE,
 	community_id BIGINT NOT NULL ,
 	author_uuid BIGINT NOT NULL ,
