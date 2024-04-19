@@ -16,7 +16,7 @@ func CreateUser(u *model.User) error {
 
 func UserExist(name string) (exist bool, err error) {
 	var res int
-	query := "SELECT 1 FROM user WHERE username = ?"
+	query := "SELECT 1 FROM user WHERE username = ? LIMIT 1"
 	if err = db.Get(&res, query, name); err != nil && errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
@@ -25,7 +25,7 @@ func UserExist(name string) (exist bool, err error) {
 
 func FindUserByName(name string) (*model.User, error) {
 	var u model.User
-	query := "SELECT * FROM user WHERE username = ?"
+	query := "SELECT * FROM user WHERE username = ? LIMIT 1"
 	if err := db.Get(&u, query, name); err != nil {
 		return nil, err
 	}

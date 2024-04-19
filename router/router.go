@@ -42,6 +42,7 @@ func registerRouter(r *gin.Engine) {
 		public.GET("/test", service.TestFunc)
 		public.GET("/community", service.CommunityList)
 		public.GET("/community/:name", service.CommunityInfo)
+		public.GET("/article", service.ArticleList)
 		public.GET("/article/:uuid", service.ReadArticle)
 		public.POST("/signup", service.Signup)
 		public.POST("/login", service.Login)

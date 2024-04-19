@@ -80,3 +80,14 @@ func CreateArticle(c *gin.Context) {
 	}
 	utils.WebMessage(c, "create article success")
 }
+
+func ArticleList(c *gin.Context) {
+	offset := c.Query("offset")
+	size := c.Query("size")
+	as, err := logic.ArticleList(offset, size)
+	if err != nil {
+		utils.WebErrorMessage(c, err, "get article list failed")
+		return
+	}
+	utils.WebMessage(c, as)
+}

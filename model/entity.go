@@ -33,3 +33,16 @@ type Article struct {
 	CreateAt     time.Time `db:"create_at"`
 	UpdateAt     time.Time `db:"update_at"`
 }
+
+type ArticleLite struct {
+	ID          int64  `db:"id"`
+	UUID        int64  `db:"uuid"`
+	CommunityID int64  `db:"community_id" json:"community_id" binding:"required"`
+	AuthorUUID  int64  `db:"author_uuid"`
+	Author      string `db:"author"`
+	Title       string `db:"title" binding:"required,max=32"`
+	//Content      string    `db:"content" binding:"required"`
+	Introduction string    `db:"introduction"`
+	CreateAt     time.Time `db:"create_at"`
+	UpdateAt     time.Time `db:"update_at"`
+}

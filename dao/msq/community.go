@@ -1,6 +1,10 @@
 package msq
 
-import "bluebell/model"
+import (
+	"bluebell/model"
+	"database/sql"
+	"errors"
+)
 
 func CommunityList() ([]model.Community, error) {
 	var cs []model.Community
@@ -37,4 +41,23 @@ func CreateArticle(art *model.Article) error {
 			  ) VALUES (?,?,?,?,?,?,?)`
 	_, err := db.Exec(query, art.UUID, art.CommunityID, art.AuthorUUID, art.Author, art.Title, art.Content, art.Introduction)
 	return err
+}
+
+func CommunityExist(id int64) (exist bool, err error) {
+	var res int
+	query := "SELECT 1 FROM community WHERE id = ? LIMIT 1"
+	if err = db.Get(&res, query, id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = nil
+		}
+		return exist, err
+	}
+	return true, nil
+}
+
+func ArticleList(offset, size int) ([]model.ArticleLite, error) {
+	var as []model.ArticleLite
+	query := "SELECT id, uuid, community_id, author_uuid, author, title, introduction, create_at, update_at FROM article LIMIT ?,?"
+	err := db.Select(&as, query, offset, size)
+	return as, err
 }
