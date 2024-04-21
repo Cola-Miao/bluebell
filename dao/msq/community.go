@@ -57,7 +57,16 @@ func CommunityExist(id int64) (exist bool, err error) {
 
 func ArticleList(offset, size int) ([]model.ArticleLite, error) {
 	var as []model.ArticleLite
-	query := "SELECT id, uuid, community_id, author_uuid, author, title, introduction, create_at, update_at FROM article LIMIT ?,?"
+	query := `SELECT id, uuid, community_id, author_uuid, author, title, introduction, create_at, update_at 
+	FROM article LIMIT ?,?`
 	err := db.Select(&as, query, offset, size)
+	return as, err
+}
+
+func ArticleListByCommunity(communityID, offset, size int) ([]model.ArticleLite, error) {
+	var as []model.ArticleLite
+	query := `SELECT id, uuid, community_id, author_uuid, author, title, introduction, create_at, update_at 
+	FROM article WHERE community_id = ? LIMIT ?,?`
+	err := db.Select(&as, query, communityID, offset, size)
 	return as, err
 }

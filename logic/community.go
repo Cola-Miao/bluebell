@@ -2,9 +2,12 @@ package logic
 
 import (
 	"bluebell/dao/msq"
+	"bluebell/dao/rdb"
 	"bluebell/model"
 	"bluebell/utils"
+	"errors"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"strconv"
 )
 
@@ -60,4 +63,46 @@ func ArticleList(offset, size string) ([]model.ArticleLite, error) {
 	}
 	as, err := msq.ArticleList(of, sz)
 	return as, err
+}
+
+func ArticleListByCommunity(communityID, offset, size string) ([]model.ArticleLite, error) {
+	comID, err := strconv.Atoi(communityID)
+	if err != nil {
+		return nil, fmt.Errorf("parse query failed:%w", err)
+	}
+	of, err := strconv.Atoi(offset)
+	if err != nil {
+		return nil, fmt.Errorf("parse query failed:%w", err)
+	}
+	sz, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, fmt.Errorf("parse query failed:%w", err)
+	}
+	as, err := msq.ArticleListByCommunity(comID, of, sz)
+	return as, err
+}
+
+func VoteForArticle(artID, userID int64, score float64) error {
+	as := strconv.Itoa(int(artID))
+	us := strconv.Itoa(int(userID))
+	hot, err := rdb.HotArticle(as)
+	if err != nil && !errors.Is(err, redis.Nil) {
+		return fmt.Errorf("query hot article failed: %w", err)
+	}
+	if !hot {
+		return errors.New("the article has expired ")
+	}
+
+	if err = rdb.VoteForArticle(as, us, score); err != nil {
+		return fmt.Errorf("vote for article failed: %w", err)
+	}
+	return nil
+}
+
+func ArticleScore(uuid string) (float64, error) {
+	score, err := rdb.ArticleScore(uuid)
+	if err != nil {
+		return 0, fmt.Errorf("get score failed: %w", err)
+	}
+	return score, nil
 }

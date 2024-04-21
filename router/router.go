@@ -40,10 +40,15 @@ func registerRouter(r *gin.Engine) {
 	{
 		public.GET("/health", service.Health)
 		public.GET("/test", service.TestFunc)
+
 		public.GET("/community", service.CommunityList)
-		public.GET("/community/:name", service.CommunityInfo)
+		public.GET("/community/:id", service.ArticleListByCommunity)
+		public.GET("/communityInfo/:name", service.CommunityInfo)
+
 		public.GET("/article", service.ArticleList)
 		public.GET("/article/:uuid", service.ReadArticle)
+		public.GET("/article_score", service.ArticleScore)
+
 		public.POST("/signup", service.Signup)
 		public.POST("/login", service.Login)
 	}
@@ -53,6 +58,7 @@ func registerRouter(r *gin.Engine) {
 		private.GET("/private", service.Private)
 		private.POST("/create_article", service.CreateArticle)
 		private.POST("/create_community", service.CreateCommunity)
+		private.POST("/article_vote", service.VoteForArticle)
 	}
 }
 

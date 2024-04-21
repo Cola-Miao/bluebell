@@ -13,7 +13,7 @@ func WebMessage(c *gin.Context, date any) {
 }
 
 func WebErrorMessage(c *gin.Context, err error, mess string) {
-	slog.Warn("bind json failed", "error", err)
+	slog.Warn(mess, "error", err)
 	c.JSON(http.StatusOK, gin.H{
 		"error": mess,
 	})

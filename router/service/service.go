@@ -1,7 +1,7 @@
 package service
 
 import (
-	"bluebell/dao/msq"
+	"bluebell/dao/rdb"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -19,11 +19,10 @@ func Private(c *gin.Context) {
 }
 
 func TestFunc(c *gin.Context) {
-	data := c.Query("data")
-	res, err := msq.UserExist(data)
+	rdb.VoteForArticle("tA", "tU", 666)
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": res,
-		"error":  err,
+		//"result": res,
+		//"error":  err,
 	})
 }

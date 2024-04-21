@@ -8,7 +8,16 @@ import (
 	"time"
 )
 
-const RedisTimeOut = time.Second * 3
+const (
+	timeout       = time.Second * 3
+	articleExpire = time.Hour * 24 * 7
+)
+const (
+	prefix          = "bluebell:"
+	articleCreateAt = "article:time"
+	articleScore    = "article:score"
+	articleVoter    = "article:voter:"
+)
 
 var db *redis.Client
 
@@ -32,11 +41,19 @@ func Init() error {
 	}
 	db = redis.NewClient(&op)
 
-	ctx, cancel := context.WithTimeout(context.Background(), RedisTimeOut)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	if err = db.Ping(ctx).Err(); err != nil {
 		return fmt.Errorf("connect redis failed: %w", err)
 	}
 
 	return nil
+}
+
+func formatKey(key string, val ...string) string {
+	res := prefix + key
+	if len(val) > 0 {
+		res += val[0]
+	}
+	return res
 }

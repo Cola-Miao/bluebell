@@ -16,6 +16,5 @@ func main() {
 		slog.Error("server start failed", "error: ", err.Error())
 		panic(err)
 	}
-
 	return
 }
