@@ -50,8 +50,9 @@ func createArticleTable() error {
 	title VARCHAR(128) NOT NULL ,
 	content TEXT NOT NULL ,
 	introduction VARCHAR(512) NOT NULL ,
+	score FLOAT DEFAULT 0,
 	create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	update_at DATETIME DEFAULT CURRENT_TIMESTAMP 
+	update_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ON UPDATE CURRENT_TIMESTAMP,
 	INDEX idx_uuid(uuid),
 	INDEX idx_community_id(community_id)

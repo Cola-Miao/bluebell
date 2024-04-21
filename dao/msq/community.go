@@ -70,3 +70,9 @@ func ArticleListByCommunity(communityID, offset, size int) ([]model.ArticleLite,
 	err := db.Select(&as, query, communityID, offset, size)
 	return as, err
 }
+
+func UpdateArticleScore(uuid int64, score float64) error {
+	query := `UPDATE article SET score = ? WHERE uuid = ?`
+	_, err := db.Exec(query, score, uuid)
+	return err
+}

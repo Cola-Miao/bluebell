@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"bluebell/dao"
 	"bluebell/dao/msq"
 	"bluebell/dao/rdb"
 	"bluebell/model"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"log/slog"
 	"strconv"
 )
 
@@ -90,6 +92,9 @@ func VoteForArticle(artID, userID int64, score float64) error {
 		return fmt.Errorf("query hot article failed: %w", err)
 	}
 	if !hot {
+		if err = dao.ArticleScoreToCold(artID); err != nil {
+			slog.Warn("data to cold failed", "error", err)
+		}
 		return errors.New("the article has expired ")
 	}
 
