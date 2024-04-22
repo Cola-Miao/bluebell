@@ -57,11 +57,11 @@ func ReadArticle(uuid int64) (*model.Article, error) {
 func ArticleList(offset, size string) ([]model.ArticleLite, error) {
 	of, err := strconv.Atoi(offset)
 	if err != nil {
-		return nil, fmt.Errorf("parse query failed:%w", err)
+		return nil, fmt.Errorf("%w: %w", model.ErrParseQuery, err)
 	}
 	sz, err := strconv.Atoi(size)
 	if err != nil {
-		return nil, fmt.Errorf("parse query failed:%w", err)
+		return nil, fmt.Errorf("%w: %w", model.ErrParseQuery, err)
 	}
 	as, err := msq.ArticleList(of, sz)
 	return as, err
@@ -70,17 +70,17 @@ func ArticleList(offset, size string) ([]model.ArticleLite, error) {
 func ArticleListByCommunity(communityID, offset, size string) ([]model.ArticleLite, error) {
 	comID, err := strconv.Atoi(communityID)
 	if err != nil {
-		return nil, fmt.Errorf("parse query failed:%w", err)
+		return nil, fmt.Errorf("%w:%w", model.ErrParseQuery, err)
 	}
 	of, err := strconv.Atoi(offset)
 	if err != nil {
-		return nil, fmt.Errorf("parse query failed:%w", err)
+		return nil, fmt.Errorf("%w:%w", model.ErrParseQuery, err)
 	}
 	sz, err := strconv.Atoi(size)
 	if err != nil {
-		return nil, fmt.Errorf("parse query failed:%w", err)
+		return nil, fmt.Errorf("%w:%w", model.ErrParseQuery, err)
 	}
-	as, err := msq.ArticleListByCommunity(comID, of, sz)
+	as, err := msq.ArticleListByCommunity(comID, of, sz, true)
 	return as, err
 }
 
@@ -110,4 +110,31 @@ func ArticleScore(uuid string) (float64, error) {
 		return 0, fmt.Errorf("get score failed: %w", err)
 	}
 	return score, nil
+}
+
+func HighestScoreArticle(offset, size string) ([]model.ArticleLite, error) {
+	of, err := strconv.Atoi(offset)
+	if err != nil {
+		return nil, fmt.Errorf("%w:%w", model.ErrParseQuery, err)
+	}
+	sz, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, fmt.Errorf("%w:%w", model.ErrParseQuery, err)
+	}
+
+	us, err := rdb.HighestScoreArticle(int64(of), int64(sz))
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", model.ErrGetCache, err)
+	}
+
+	uuid, err := utils.AtoInt64(us)
+	if err != nil {
+		return nil, fmt.Errorf("parse slice failed: %w", err)
+	}
+
+	as, err := msq.ArticleListByUUID(uuid)
+	if err != nil {
+		return nil, fmt.Errorf("get article list failed: %w", err)
+	}
+	return as, nil
 }

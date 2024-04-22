@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bluebell/dao/rdb"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -19,10 +18,9 @@ func Private(c *gin.Context) {
 }
 
 func TestFunc(c *gin.Context) {
-	rdb.VoteForArticle("tA", "tU", 666)
-
-	c.JSON(http.StatusOK, gin.H{
-		//"result": res,
-		//"error":  err,
-	})
+	//res, err := logic.ArticleListByU
+	//c.JSON(http.StatusOK, gin.H{
+	//	"result": res,
+	//	"error":  err,
+	//})
 }

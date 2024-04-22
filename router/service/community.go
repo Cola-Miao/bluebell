@@ -134,3 +134,14 @@ func ArticleScore(c *gin.Context) {
 	}
 	utils.WebMessage(c, score)
 }
+
+func HighestScoreArticle(c *gin.Context) {
+	offset := c.Query("offset")
+	size := c.Query("size")
+	as, err := logic.HighestScoreArticle(offset, size)
+	if err != nil {
+		utils.WebErrorMessage(c, err, model.ErrGetList.Error())
+		return
+	}
+	utils.WebMessage(c, as)
+}

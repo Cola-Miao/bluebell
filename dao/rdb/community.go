@@ -13,11 +13,19 @@ func CreateArticle(uuid int64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	err := db.ZAdd(ctx, formatKey(articleCreateAt), redis.Z{
+	if err := db.ZAdd(ctx, formatKey(articleCreateAt), redis.Z{
 		Score:  float64(time.Now().Unix()),
 		Member: uuid,
-	}).Err()
-	return err
+	}).Err(); err != nil {
+		return err
+	}
+	if err := db.ZAdd(ctx, formatKey(articleScore), redis.Z{
+		Score:  0,
+		Member: uuid,
+	}).Err(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func HotArticle(uuid string) (bool, error) {
@@ -78,9 +86,9 @@ func DeleteArticle(uuid string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	var err error
-	if err = db.ZRem(ctx, formatKey(articleScore), uuid).Err(); err != nil {
-		return fmt.Errorf("delete cache item failed: %w", err)
-	}
+	//if err = db.ZRem(ctx, formatKey(articleScore), uuid).Err(); err != nil {
+	//	return fmt.Errorf("delete cache item failed: %w", err)
+	//}
 	if err = db.ZRem(ctx, formatKey(articleCreateAt), uuid).Err(); err != nil {
 		return fmt.Errorf("delete cache item failed: %w", err)
 	}
@@ -88,4 +96,14 @@ func DeleteArticle(uuid string) error {
 		return fmt.Errorf("delete cache failed: %w", err)
 	}
 	return nil
+}
+
+func HighestScoreArticle(offset, size int64) ([]string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	res, err := db.ZRevRangeByScore(ctx, formatKey(articleScore), &redis.ZRangeBy{
+		Offset: offset,
+		Count:  size,
+	}).Result()
+	return res, err
 }

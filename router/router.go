@@ -48,6 +48,7 @@ func registerRouter(r *gin.Engine) {
 		public.GET("/article", service.ArticleList)
 		public.GET("/article/:uuid", service.ReadArticle)
 		public.GET("/article_score", service.ArticleScore)
+		public.GET("/highest_score_article", service.HighestScoreArticle)
 
 		public.POST("/signup", service.Signup)
 		public.POST("/login", service.Login)
