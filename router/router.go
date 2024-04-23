@@ -8,6 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"log/slog"
 	"net/http"
 	"os"
@@ -36,6 +38,7 @@ func SetupRouter() error {
 }
 
 func registerRouter(r *gin.Engine) {
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	public := r.Group("/")
 	{
 		public.GET("/health", service.Health)

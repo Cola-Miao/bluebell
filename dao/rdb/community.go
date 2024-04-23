@@ -86,12 +86,6 @@ func DeleteArticle(uuid string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	var err error
-	//if err = db.ZRem(ctx, formatKey(articleScore), uuid).Err(); err != nil {
-	//	return fmt.Errorf("delete cache item failed: %w", err)
-	//}
-	if err = db.ZRem(ctx, formatKey(articleCreateAt), uuid).Err(); err != nil {
-		return fmt.Errorf("delete cache item failed: %w", err)
-	}
 	if err = db.Del(ctx, formatKey(articleVoter, uuid)).Err(); err != nil {
 		return fmt.Errorf("delete cache failed: %w", err)
 	}

@@ -27,8 +27,8 @@ type Article struct {
 	CommunityID  int64     `db:"community_id" json:"community_id" binding:"required"`
 	AuthorUUID   int64     `db:"author_uuid"`
 	Author       string    `db:"author"`
-	Title        string    `db:"title" binding:"required,max=32"`
-	Content      string    `db:"content" binding:"required"`
+	Title        string    `db:"title" binding:"required,max=32" example:"testTitle"`
+	Content      string    `db:"content" binding:"required" example:"if too long will got a truncated introduction"`
 	Introduction string    `db:"introduction"`
 	Score        float32   `db:"score"`
 	CreateAt     time.Time `db:"create_at"`

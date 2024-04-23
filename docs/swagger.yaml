@@ -1,0 +1,407 @@
+basePath: /
+definitions:
+  model.Article:
+    properties:
+      author:
+        type: string
+      authorUUID:
+        type: integer
+      community_id:
+        type: integer
+      content:
+        example: if too long will got a truncated introduction
+        type: string
+      createAt:
+        type: string
+      id:
+        type: integer
+      introduction:
+        type: string
+      score:
+        type: number
+      title:
+        example: testTitle
+        maxLength: 32
+        type: string
+      updateAt:
+        type: string
+      uuid:
+        type: integer
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  model.Community:
+    properties:
+      adminUUID:
+        type: integer
+      administrator:
+        type: string
+      id:
+        type: integer
+      introduction:
+        maxLength: 512
+        type: string
+      name:
+        maxLength: 16
+        minLength: 1
+        type: string
+    required:
+    - introduction
+    - name
+    type: object
+  model.FormLogin:
+    properties:
+      password:
+        example: testPassword
+        maxLength: 64
+        minLength: 8
+        type: string
+      username:
+        example: testName
+        maxLength: 8
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.FormSignup:
+    properties:
+      password:
+        example: testPassword
+        maxLength: 64
+        minLength: 8
+        type: string
+      rePassword:
+        example: testPassword
+        type: string
+      username:
+        example: testName
+        maxLength: 8
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.FormVote:
+    properties:
+      score:
+        example: 4
+        maximum: 5
+        minimum: 1
+        type: number
+      uuid:
+        example: 1781231541096022016
+        type: integer
+    required:
+    - score
+    - uuid
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:5912
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample bbs server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Bluebell
+  version: 0.4.7
+paths:
+  /article:
+    get:
+      consumes:
+      - application/json
+      description: get article list, need input offset and (page)size in query
+      parameters:
+      - description: mysql.bluebell.article offset
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get article list without content
+      tags:
+      - community
+  /article/{uuid}:
+    get:
+      consumes:
+      - application/json
+      description: get path uuid specified article's information from mysql.bluebell.article
+      parameters:
+      - description: article's uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get article information
+      tags:
+      - community
+  /article_vote:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        vote 0~5 score for article
+        voter will store to zset article:voter:{article_uuid}
+        repeat vote be checked and got correct score
+        vote for expired article will be refuse
+      parameters:
+      - description: 'article_uuid and score '
+        in: body
+        name: voteForm
+        required: true
+        schema:
+          $ref: '#/definitions/model.FormVote'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: vote form article
+      tags:
+      - community
+      - auth
+  /community:
+    get:
+      consumes:
+      - application/json
+      description: get community list from mysql.bluebell.community
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get community list
+      tags:
+      - community
+  /community/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get article list, need input community_id in path and offset ,(page)size
+        in query
+      parameters:
+      - description: community id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: mysql.bluebell.article offset
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get specified community's article list without content
+      tags:
+      - community
+  /community/{name}:
+    get:
+      consumes:
+      - application/json
+      description: get path specified community's information from mysql.bluebell.community
+      parameters:
+      - description: specified community
+        in: path
+        name: community_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get community information
+      tags:
+      - community
+  /create_article:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        only need get article title and content from request body
+        add creator id, name and generate uuid, introduction to article info
+        store to mysql.bluebell.article, at this time add create_at and update_at
+        add article_uuid to zset article:time and article:score
+      parameters:
+      - description: article information
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/model.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create article
+      tags:
+      - community
+      - auth
+  /create_community:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        check community_name whether to repeat
+        create a new community, default admin is creator
+      parameters:
+      - description: community name & introduction
+        in: body
+        name: community
+        required: true
+        schema:
+          $ref: '#/definitions/model.Community'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create community
+      tags:
+      - community
+      - auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        get login info json from request body
+        validate username existed, the length of data and compare password
+        generate and set jwt to cookie
+      parameters:
+      - description: User Login Form
+        in: body
+        name: LoginForm
+        required: true
+        schema:
+          $ref: '#/definitions/model.FormLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: login successful
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: User Login
+      tags:
+      - account
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        get signup info json from request body
+        validate username existed, the length of data and re-password
+        create new user with encode password to mysql.bluebell.user
+      parameters:
+      - description: User Signup Form
+        in: body
+        name: SignupForm
+        required: true
+        schema:
+          $ref: '#/definitions/model.FormSignup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: signup successful
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: User Signup
+      tags:
+      - account
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

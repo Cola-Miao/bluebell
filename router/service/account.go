@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Signup godoc
+//
+//	@Summary		User Signup
+//	@Description	get signup info json from request body
+//	@Description	validate username existed, the length of data and re-password
+//	@Description	create new user with encode password to mysql.bluebell.user
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@Param			SignupForm	body		model.FormSignup	true	"User Signup Form"
+//	@Success		200			{object}	string				"signup successful"
+//	@Failure		400			{string}	string
+//	@Router			/signup [post]
 func Signup(c *gin.Context) {
 	var sf model.FormSignup
 	var err error
@@ -22,6 +35,19 @@ func Signup(c *gin.Context) {
 	utils.WebMessage(c, "signup successful")
 }
 
+// Login godoc
+//
+//	@Summary		User Login
+//	@Description	get login info json from request body
+//	@Description	validate username existed, the length of data and compare password
+//	@Description	generate and set jwt to cookie
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@Param			LoginForm	body		model.FormLogin	true	"User Login Form"
+//	@Success		200			{object}	string			"login successful"
+//	@Failure		400			{string}	string
+//	@Router			/login [post]
 func Login(c *gin.Context) {
 	var lf model.FormLogin
 	var err error
